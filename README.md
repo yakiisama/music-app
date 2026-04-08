@@ -16,6 +16,8 @@ pnpm run tauri:dev       # 启动桌面应用（开发模式）
 pnpm run tauri:build     # 生成安装包（需配置签名环境变量才会生成更新用签名，见下）
 ```
 
+修改依赖后请 **`pnpm install` 并提交 `pnpm-lock.yaml`** 再推送到 GitHub，否则 Release Actions 可能仍安装旧版 `@tauri-apps/plugin-*`，与 Rust 侧版本不一致导致构建失败。
+
 ## 自动更新
 
 正式安装包启动后会静默检查 GitHub Releases 上的 `latest.json`；若有新版本会提示「下载并安装」。也可在 **设置 → 应用更新** 里手动检查。

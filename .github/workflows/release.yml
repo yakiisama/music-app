@@ -49,6 +49,22 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify Tauri plugin npm versions (must match Cargo / Tauri CLI)
+        run: |
+          node -e "
+            const p = require('./node_modules/@tauri-apps/plugin-process/package.json');
+            const u = require('./node_modules/@tauri-apps/plugin-updater/package.json');
+            if (p.version !== '2.3.1' || u.version !== '2.10.1') {
+              console.error('Wrong versions installed:', 'plugin-process@' + p.version, 'plugin-updater@' + u.version);
+              console.error('Fix: commit package.json + pnpm-lock.yaml from this repo and push.');
+              process.exit(1);
+            }
+            console.log('OK:', 'plugin-process@' + p.version, 'plugin-updater@' + u.version);
+          "
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

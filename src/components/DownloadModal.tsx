@@ -25,14 +25,6 @@ const videoOptions: { id: DownloadQuality; label: string; tag: string }[] = [
   { id: 'mp4_480', label: '流畅', tag: '480P' },
 ]
 
-function CheckSmall() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  )
-}
-
 function MusicIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

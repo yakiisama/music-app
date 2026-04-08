@@ -7,6 +7,7 @@
 - **Tauri 2** 桌面壳 + **React 19 + TypeScript** 前端。
 - 通过内置 **yt-dlp**、**ffmpeg**（`src-tauri/build.rs` 在构建时拉取到 `src-tauri/binaries/`，勿提交二进制）完成搜索、流式播放、下载。
 - 包管理器：**pnpm**（版本以 `package.json` 的 `packageManager` 为准，勿与 CI 里再写一套冲突版本）。
+- **Release / CI：** 改 `@tauri-apps/*` 或 Tauri 插件后务必 **`pnpm install` 并提交 `pnpm-lock.yaml`**；否则 CI 会装旧版本，报 NPM 与 Rust 插件版本不一致。`package.json` 中 `pnpm.overrides` 会强制 `plugin-process@2.3.1`、`plugin-updater@2.10.1`。
 
 ## 常用命令
 

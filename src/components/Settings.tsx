@@ -122,7 +122,10 @@ export default function Settings({
           {updaterState.kind === 'error' && (
             <p className="text-[13px] text-red-400/90">{updaterState.message}</p>
           )}
-          {(updaterState.kind === 'idle' || updaterState.kind === 'latest' || updaterState.kind === 'error') && (
+          {(updaterState.kind === 'idle' ||
+            updaterState.kind === 'checking' ||
+            updaterState.kind === 'latest' ||
+            updaterState.kind === 'error') && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <button
                 type="button"
@@ -137,7 +140,7 @@ export default function Settings({
               >
                 检查更新
               </button>
-              {offerUpdate && updaterState.kind !== 'downloading' && updaterState.kind !== 'installing' && (
+              {offerUpdate && (
                 <button
                   type="button"
                   onClick={() => onInstallUpdate()}
