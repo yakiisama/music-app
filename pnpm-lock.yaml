@@ -11,6 +11,12 @@ importers:
       '@tauri-apps/api':
         specifier: ^2.10.1
         version: 2.10.1
+      '@tauri-apps/plugin-process':
+        specifier: ^2.2.0
+        version: 2.2.0
+      '@tauri-apps/plugin-updater':
+        specifier: ^2.5.0
+        version: 2.5.0
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -371,6 +377,13 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@tailwindcss/oxide-linux-arm64-musl@4.2.2':
+    resolution: {integrity: sha1-9MxBKcF9PyvLAe/vTXovOB5eP1M=}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@tailwindcss/oxide-linux-x64-gnu@4.2.2':
     resolution: {integrity: sha1-fEoAsIKeEnNr1y7HThwIIFRIzC4=}
     engines: {node: '>= 20'}
@@ -496,6 +509,12 @@ packages:
     resolution: {integrity: sha1-2bApDwPVaeEOs0mgu3L0SIgL+dc=}
     engines: {node: '>= 10'}
     hasBin: true
+
+  '@tauri-apps/plugin-process@2.2.0':
+    resolution: {integrity: sha1-6fm1EDdCUJZ9K6fTQ6CMkCS91HM=}
+
+  '@tauri-apps/plugin-updater@2.5.0':
+    resolution: {integrity: sha1-WdQOs3jkc1WD8lPZQu/QRKsW0t8=}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha1-7N3TIFzx4tUnRkn/Du3SmR7X9BQ=}
@@ -1526,6 +1545,9 @@ snapshots:
   '@tailwindcss/oxide-linux-arm64-gnu@4.2.2':
     optional: true
 
+  '@tailwindcss/oxide-linux-arm64-musl@4.2.2':
+    optional: true
+
   '@tailwindcss/oxide-linux-x64-gnu@4.2.2':
     optional: true
 
@@ -1549,6 +1571,7 @@ snapshots:
       '@tailwindcss/oxide-freebsd-x64': 4.2.2
       '@tailwindcss/oxide-linux-arm-gnueabihf': 4.2.2
       '@tailwindcss/oxide-linux-arm64-gnu': 4.2.2
+      '@tailwindcss/oxide-linux-arm64-musl': 4.2.2
       '@tailwindcss/oxide-linux-x64-gnu': 4.2.2
       '@tailwindcss/oxide-linux-x64-musl': 4.2.2
       '@tailwindcss/oxide-wasm32-wasi': 4.2.2
@@ -1610,6 +1633,14 @@ snapshots:
       '@tauri-apps/cli-win32-arm64-msvc': 2.10.1
       '@tauri-apps/cli-win32-ia32-msvc': 2.10.1
       '@tauri-apps/cli-win32-x64-msvc': 2.10.1
+
+  '@tauri-apps/plugin-process@2.2.0':
+    dependencies:
+      '@tauri-apps/api': 2.10.1
+
+  '@tauri-apps/plugin-updater@2.5.0':
+    dependencies:
+      '@tauri-apps/api': 2.10.1
 
   '@tybys/wasm-util@0.10.1':
     dependencies:

@@ -81,7 +81,20 @@ pub fn list_downloaded_files() -> Result<Vec<DownloadedFile>, String> {
             .and_then(|e| e.to_str())
             .unwrap_or("")
             .to_lowercase();
-        if !matches!(ext.as_str(), "mp3" | "flac" | "m4a" | "opus" | "ogg" | "wav" | "webm" | "mp4" | "mkv" | "avi" | "mov") {
+        if !matches!(
+            ext.as_str(),
+            "mp3"
+                | "flac"
+                | "m4a"
+                | "opus"
+                | "ogg"
+                | "wav"
+                | "webm"
+                | "mp4"
+                | "mkv"
+                | "avi"
+                | "mov"
+        ) {
             continue;
         }
         let meta = std::fs::metadata(&path).map_err(|e| e.to_string())?;

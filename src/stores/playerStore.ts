@@ -3,6 +3,11 @@ import type { AppSettings, DownloadTask, DownloadedFile, Track } from '../types'
 
 export type TabId = 'search' | 'downloads' | 'settings'
 
+export type PendingUpdate = {
+  version: string
+  body?: string
+}
+
 type PlayerState = {
   tab: TabId
   results: Track[]
@@ -19,6 +24,7 @@ type PlayerState = {
   downloadTasks: Record<string, DownloadTask>
   downloadedFiles: DownloadedFile[]
   settings: AppSettings
+  pendingUpdate?: PendingUpdate
 
   setTab: (tab: TabId) => void
   setResults: (tracks: Track[]) => void
@@ -34,6 +40,7 @@ type PlayerState = {
   upsertDownloadTask: (task: DownloadTask) => void
   setDownloadedFiles: (files: DownloadedFile[]) => void
   setSettings: (s: AppSettings) => void
+  setPendingUpdate: (u?: PendingUpdate) => void
 }
 
 const defaultSettings: AppSettings = {
@@ -58,6 +65,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   downloadTasks: {},
   downloadedFiles: [],
   settings: defaultSettings,
+  pendingUpdate: undefined,
 
   setTab: (tab) => set({ tab }),
   setResults: (tracks) => set({ results: tracks, queue: tracks }),
@@ -76,4 +84,5 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     })),
   setDownloadedFiles: (files) => set({ downloadedFiles: files }),
   setSettings: (s) => set({ settings: s }),
+  setPendingUpdate: (u) => set({ pendingUpdate: u }),
 }))

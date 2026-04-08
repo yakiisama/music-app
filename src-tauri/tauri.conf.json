@@ -26,6 +26,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "externalBin": ["binaries/yt-dlp", "binaries/ffmpeg"],
     "icon": [
       "icons/32x32.png",
@@ -34,5 +35,16 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IERFNEUyQUNDODExQTg0QTkKUldTcGhCcUJ6Q3BPM2wwaU5BOFp2VTJYNnIzdVJKUlcwaW9vYnBQOWNPYVRuMVdTa2F6ZkFzeDgK",
+      "endpoints": [
+        "https://github.com/yakiisama/music-app/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

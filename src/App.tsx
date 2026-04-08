@@ -9,6 +9,7 @@ import { useAudio } from './hooks/useAudio'
 import { useDownload } from './hooks/useDownload'
 import { useSearch } from './hooks/useSearch'
 import { useSettings } from './hooks/useSettings'
+import { checkUpdateSilently, useUpdater } from './hooks/useUpdater'
 import { usePlayerStore } from './stores/playerStore'
 import type { Track } from './types'
 
@@ -34,6 +35,7 @@ function App() {
   const { download, openInFinder, refreshFiles } = useDownload()
   const { audioRef, playTrack, togglePlay, seek } = useAudio()
   const { save: saveSettings, pickFolder } = useSettings()
+  const updater = useUpdater()
 
   const tab = usePlayerStore((s) => s.tab)
   const setTab = usePlayerStore((s) => s.setTab)
@@ -51,6 +53,15 @@ function App() {
   const downloadTasks = usePlayerStore((s) => s.downloadTasks)
   const downloadedFiles = usePlayerStore((s) => s.downloadedFiles)
   const settings = usePlayerStore((s) => s.settings)
+  const pendingUpdate = usePlayerStore((s) => s.pendingUpdate)
+  const setPendingUpdate = usePlayerStore((s) => s.setPendingUpdate)
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) return
+    checkUpdateSilently().then((m) => {
+      if (m) setPendingUpdate(m)
+    })
+  }, [setPendingUpdate])
 
   useEffect(() => {
     const onKeydown = (e: KeyboardEvent) => {
@@ -100,6 +111,30 @@ function App() {
         </nav>
       </header>
 
+      {pendingUpdate && (
+        <div className="mx-5 mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-cyan-900/40 bg-cyan-950/25 px-3 py-2.5">
+          <p className="text-xs text-cyan-200/90">
+            发现新版本 <span className="font-medium text-cyan-300">v{pendingUpdate.version}</span>
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPendingUpdate(undefined)}
+              className="rounded-md px-2 py-1 text-xs text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+            >
+              稍后
+            </button>
+            <button
+              type="button"
+              onClick={() => updater.downloadInstallAndRelaunch()}
+              className="rounded-md bg-cyan-400 px-3 py-1 text-xs font-medium text-zinc-950 transition-colors hover:bg-cyan-300"
+            >
+              下载并安装
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 错误提示 */}
       {error && (
         <div className="mx-5 mt-3 rounded-lg border border-red-900/40 bg-red-950/30 px-3 py-2 text-xs text-red-400">
@@ -140,6 +175,10 @@ function App() {
             onSave={saveSettings}
             onPickFolder={pickFolder}
             onOpenFolder={openInFinder}
+            updaterState={updater.state}
+            onCheckUpdate={updater.checkManual}
+            onInstallUpdate={updater.downloadInstallAndRelaunch}
+            onResetUpdaterState={updater.resetState}
           />
         )}
       </main>

@@ -28,3 +28,6 @@ src-tauri/target/
 
 # Generated assets
 /assets/
+
+# Tauri updater signing key (never commit)
+.keys/

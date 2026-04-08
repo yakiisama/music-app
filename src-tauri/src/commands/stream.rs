@@ -10,13 +10,7 @@ pub async fn get_stream_url(app: AppHandle, video_id: String) -> Result<String, 
     let url = format!("https://www.youtube.com/watch?v={id}");
 
     let output = ytdlp_cmd(&app)?
-        .args([
-            "-f",
-            "bestaudio/best",
-            "-g",
-            "--no-warnings",
-            url.as_str(),
-        ])
+        .args(["-f", "bestaudio/best", "-g", "--no-warnings", url.as_str()])
         .output()
         .await
         .map_err(|e| e.to_string())?;

@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import type { AppSettings, DownloadQuality } from '../types'
+import type { UpdateUiState } from '../hooks/useUpdater'
 
 type Props = {
   settings: AppSettings
   onSave: (s: AppSettings) => Promise<void>
   onPickFolder: () => Promise<string | null>
   onOpenFolder: (path: string) => void
+  updaterState: UpdateUiState
+  onCheckUpdate: () => Promise<{ version: string; body?: string } | null>
+  onInstallUpdate: () => Promise<void>
+  onResetUpdaterState: () => void
 }
 
 const qualityOptions: { id: DownloadQuality; label: string; desc: string }[] = [
@@ -44,10 +49,20 @@ function SavedToast() {
   )
 }
 
-export default function Settings({ settings, onSave, onPickFolder, onOpenFolder }: Props) {
+export default function Settings({
+  settings,
+  onSave,
+  onPickFolder,
+  onOpenFolder,
+  updaterState,
+  onCheckUpdate,
+  onInstallUpdate,
+  onResetUpdaterState,
+}: Props) {
   const [local, setLocal] = useState<AppSettings>(settings)
   const [saved, setSaved] = useState(false)
   const [dirty, setDirty] = useState(false)
+  const [offerUpdate, setOfferUpdate] = useState<{ version: string; body?: string } | null>(null)
 
   useEffect(() => {
     setLocal(settings)
@@ -77,6 +92,68 @@ export default function Settings({ settings, onSave, onPickFolder, onOpenFolder 
   return (
     <div className="mx-auto max-w-lg space-y-6 pt-4">
       <h2 className="text-[15px] font-semibold text-zinc-100">设置</h2>
+
+      {/* 应用更新 */}
+      <section className="space-y-2">
+        <label className="text-xs font-medium text-zinc-400">应用更新</label>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-3">
+          {updaterState.kind === 'checking' && (
+            <p className="text-[13px] text-zinc-400">正在检查更新…</p>
+          )}
+          {updaterState.kind === 'downloading' && (
+            <div>
+              <p className="text-[13px] text-zinc-300">正在下载更新…</p>
+              {updaterState.percent != null && (
+                <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+                  <div
+                    className="h-full bg-cyan-400 transition-[width] duration-200"
+                    style={{ width: `${Math.round(updaterState.percent)}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+          {updaterState.kind === 'installing' && (
+            <p className="text-[13px] text-zinc-300">正在安装，即将重启…</p>
+          )}
+          {updaterState.kind === 'latest' && (
+            <p className="text-[13px] text-emerald-400/90">当前已是最新版本</p>
+          )}
+          {updaterState.kind === 'error' && (
+            <p className="text-[13px] text-red-400/90">{updaterState.message}</p>
+          )}
+          {(updaterState.kind === 'idle' || updaterState.kind === 'latest' || updaterState.kind === 'error') && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  onResetUpdaterState()
+                  setOfferUpdate(null)
+                  const m = await onCheckUpdate()
+                  if (m) setOfferUpdate(m)
+                }}
+                disabled={updaterState.kind === 'checking'}
+                className="rounded-lg border border-zinc-700 px-3 py-2 text-xs text-zinc-200 transition-colors hover:bg-zinc-800 disabled:opacity-50"
+              >
+                检查更新
+              </button>
+              {offerUpdate && updaterState.kind !== 'downloading' && updaterState.kind !== 'installing' && (
+                <button
+                  type="button"
+                  onClick={() => onInstallUpdate()}
+                  className="rounded-lg bg-cyan-400 px-3 py-2 text-xs font-medium text-zinc-950 transition-colors hover:bg-cyan-300"
+                >
+                  下载并安装 v{offerUpdate.version}
+                </button>
+              )}
+            </div>
+          )}
+          {offerUpdate?.body && updaterState.kind === 'idle' && (
+            <p className="mt-2 whitespace-pre-wrap text-[11px] leading-relaxed text-zinc-500">{offerUpdate.body}</p>
+          )}
+        </div>
+        <p className="text-[11px] text-zinc-600">从 GitHub Releases 获取更新（正式安装包）</p>
+      </section>
 
       {/* 下载路径 */}
       <section className="space-y-2">

@@ -25,13 +25,20 @@ impl Default for AppSettings {
 
 fn default_download_dir() -> PathBuf {
     dirs::desktop_dir()
-        .unwrap_or_else(|| dirs::home_dir().unwrap_or_else(|| PathBuf::from(".")).join("Desktop"))
+        .unwrap_or_else(|| {
+            dirs::home_dir()
+                .unwrap_or_else(|| PathBuf::from("."))
+                .join("Desktop")
+        })
         .join("music")
 }
 
 fn config_path() -> PathBuf {
-    let base = dirs::config_dir()
-        .unwrap_or_else(|| dirs::home_dir().unwrap_or_else(|| PathBuf::from(".")).join(".config"));
+    let base = dirs::config_dir().unwrap_or_else(|| {
+        dirs::home_dir()
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(".config")
+    });
     base.join("yt-music-player").join("settings.json")
 }
 
