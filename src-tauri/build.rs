@@ -35,14 +35,10 @@ fn ffmpeg_dest(bin_dir: &Path, target: &str) -> PathBuf {
 
 fn ensure_yt_dlp(bin_dir: &Path, target: &str) {
     let dest = ytdlp_dest(bin_dir, target);
-    if dest.exists() {
+    if dest.exists() && !should_replace_ytdlp(&dest, target) {
         return;
     }
-    let url = if target.contains("windows") {
-        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
-    } else {
-        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
-    };
+    let url = ytdlp_url(target);
     println!("cargo:warning=fetching yt-dlp ({target})");
     download(url, &dest);
     #[cfg(unix)]
@@ -52,6 +48,41 @@ fn ensure_yt_dlp(bin_dir: &Path, target: &str) {
         perms.set_mode(0o755);
         fs::set_permissions(&dest, perms).unwrap();
     }
+}
+
+fn ytdlp_url(target: &str) -> &'static str {
+    match target {
+        t if t.contains("windows") && t.contains("aarch64") => {
+            "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_arm64.exe"
+        }
+        t if t.contains("windows") => {
+            "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
+        }
+        t if t.contains("apple") => {
+            "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos"
+        }
+        t if t.contains("linux") && t.contains("aarch64") => {
+            "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux_aarch64"
+        }
+        t if t.contains("linux") => {
+            "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux"
+        }
+        _ => panic!("unsupported TARGET for yt-dlp bundle: {target}"),
+    }
+}
+
+fn should_replace_ytdlp(path: &Path, target: &str) -> bool {
+    if target.contains("windows") {
+        return false;
+    }
+
+    let Ok(bytes) = fs::read(path) else {
+        return true;
+    };
+
+    // We accidentally used the generic `yt-dlp` script before, which needs Python.
+    // If the sidecar starts with a shebang, redownload platform binary.
+    bytes.starts_with(b"#!")
 }
 
 fn ffmpeg_url(target: &str) -> &'static str {

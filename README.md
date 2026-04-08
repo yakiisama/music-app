@@ -1,5 +1,9 @@
 # Music — YouTube 音乐播放器
 
+```sh
+xattr -dr com.apple.quarantine "/Applications/Music.app"
+```
+
 跨平台桌面音乐应用，基于 Tauri 2 + React + TypeScript。  
 通过内置 yt-dlp 实现 YouTube 搜索、在线播放和多品质下载。
 

@@ -25,7 +25,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["dmg", "nsis"],
     "createUpdaterArtifacts": true,
     "externalBin": ["binaries/yt-dlp", "binaries/ffmpeg"],
     "icon": [
